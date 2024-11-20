@@ -1,2 +1,3 @@
 # Assignment 4: Search Engine 
-### Collaborators Andrew Kuehn - Chiara Tesoriero
+Collaborators: Andrew Kuehn - Chiara Tesoriero
+
