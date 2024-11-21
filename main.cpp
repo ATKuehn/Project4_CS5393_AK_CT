@@ -4,6 +4,7 @@
 #include "AvlTree.h"
 #include "DocumentParser.h"
 #include "QueryProcessor.h"
+//referenced from G4G, DigitalOceans
 
 // Function to index all files in a given directory and output performance statistics.
 void indexDirectory(DocumentParser& docParse, AvlTree<std::string>& PersonTree, 
