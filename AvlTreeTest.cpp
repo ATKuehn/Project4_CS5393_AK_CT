@@ -2,9 +2,11 @@
 #include "AvlTree.h"
 #include "catch2/catch.hpp"
 
+using namespace std;
+
 // Test case for operations on an empty AVL tree
 TEST_CASE("Empty AVL Tree") {
-    AvlTree<std::string> avlTree;
+    AvlTree<string> avlTree;
 
     SECTION("Tree is initially empty") {
         REQUIRE(avlTree.isEmpty());
@@ -17,7 +19,7 @@ TEST_CASE("Empty AVL Tree") {
 
 // Test case for insertion and checking containment in the AVL tree
 TEST_CASE("AVL Tree Insertion and Containment Check") {
-    AvlTree<std::string> avlTree;
+    AvlTree<string> avlTree;
 
     // Insert multiple words with associated document IDs and frequencies
     avlTree.insert("example", "doc1", 5);
@@ -65,7 +67,7 @@ TEST_CASE("AVL Tree Insertion and Containment Check") {
 
 // Test case for copy constructor and assignment operator in the AVL tree
 TEST_CASE("AVL Tree Copy Constructor and Assignment Operator") {
-    AvlTree<std::string> avlTree;
+    AvlTree<string> avlTree;
 
     avlTree.insert("example", "doc1", 5);
     avlTree.insert("example", "doc2", 3);
@@ -74,7 +76,7 @@ TEST_CASE("AVL Tree Copy Constructor and Assignment Operator") {
     avlTree.insert("data", "doc1", 10);
 
     SECTION("Testing copy constructor") {
-        AvlTree<std::string> avlTreeCopy(avlTree);
+        AvlTree<string> avlTreeCopy(avlTree);
 
         REQUIRE(avlTreeCopy.contains("example"));
         REQUIRE(avlTreeCopy.contains("test"));
@@ -85,7 +87,7 @@ TEST_CASE("AVL Tree Copy Constructor and Assignment Operator") {
     }
 
     SECTION("Testing assignment operator") {
-        AvlTree<std::string> avlTreeAssigned;
+        AvlTree<string> avlTreeAssigned;
         avlTreeAssigned = avlTree;
 
         REQUIRE(avlTreeAssigned.contains("example"));
@@ -99,7 +101,7 @@ TEST_CASE("AVL Tree Copy Constructor and Assignment Operator") {
 
 // Test case for clearing the contents of the AVL tree
 TEST_CASE("AVL Tree Clearing") {
-    AvlTree<std::string> avlTree;
+    AvlTree<string> avlTree;
 
     avlTree.insert("example", "doc1", 5);
     avlTree.insert("test", "doc2", 7);
@@ -116,8 +118,8 @@ TEST_CASE("AVL Tree Clearing") {
 
 // Test case for persistence operations in the AVL tree
 TEST_CASE("AVL Tree Persistence") {
-    AvlTree<std::string> test1;
-    AvlTree<std::string> test2;
+    AvlTree<string> test1;
+    AvlTree<string> test2;
 
     // Insert nodes and store the tree's state in a file
     test1.insert("example", "doc1", 5);
@@ -139,4 +141,3 @@ TEST_CASE("AVL Tree Persistence") {
     REQUIRE(exampleMap["doc1"] == 5);
     REQUIRE(exampleMap["doc5"] == 9);
 }
-
