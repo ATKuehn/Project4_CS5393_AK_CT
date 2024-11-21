@@ -24,7 +24,7 @@ class AvlTree {
         AvlNode *left;                       // Pointer to the left child
         AvlNode *right;                      // Pointer to the right child
         int height;                          // Height of the node
-        std::map<std::string, int> wordMap;  // Map of document IDs to frequencies
+        map<string, int> wordMap;            // Map of document IDs to frequencies
 
         // Constructor for AvlNode
         AvlNode(const Comparable &theKey, AvlNode *lt = nullptr, AvlNode *rt = nullptr, int h = 0)
@@ -103,9 +103,9 @@ class AvlTree {
      * @param key The key to search for.
      * @return A map of document IDs and their frequencies, or an empty map if the key is not found.
      */
-    std::map<std::string, int> getWordMapAtKey(const Comparable &key) const {
+    map<string, int> getWordMapAtKey(const Comparable &key) const {
         AvlNode *node = findNode(key);
-        return node ? node->wordMap : std::map<std::string, int>();
+        return node ? node->wordMap : map<string, int>();
     }
 
     /**
@@ -137,7 +137,7 @@ class AvlTree {
      * @param documentID The document ID associated with the key.
      * @param frequency The frequency count for the document ID.
      */
-    void insert(const Comparable &x, const std::string &documentID, int frequency) {
+    void insert(const Comparable &x, const string &documentID, int frequency) {
         insert(x, documentID, frequency, root);
     }
 
@@ -145,10 +145,10 @@ class AvlTree {
      * @brief Writes the tree structure to a text file in a readable format.
      * @param filename The name of the file to write to.
      */
-    void writeToTextFile(const std::string &filename) const {
-        std::ofstream outFile(filename);
+    void writeToTextFile(const string &filename) const {
+        ofstream outFile(filename);
         if (!outFile) {
-            std::cerr << "Error: Unable to open file " << filename << " for writing." << std::endl;
+            cerr << "Error: Unable to open file " << filename << " for writing." << endl;
             return;
         }
         writeHelper(root, outFile);
@@ -159,35 +159,35 @@ class AvlTree {
      * @brief Reads tree data from a text file and reconstructs the tree.
      * @param filename The name of the file to read from.
      */
-    void readFromTextFile(const std::string &filename) {
-        std::ifstream inFile(filename);
+    void readFromTextFile(const string &filename) {
+        ifstream inFile(filename);
         if (!inFile) {
-            std::cerr << "Error: Unable to open file " << filename << " for reading." << std::endl;
+            cerr << "Error: Unable to open file " << filename << " for reading." << endl;
             return;
         }
 
-        std::string line;
-        while (std::getline(inFile, line)) {
-            std::string key, docID;
+        string line;
+        while (getline(inFile, line)) {
+            string key, docID;
             int frequency;
 
             size_t colonPos = line.find(':');
-            if (colonPos == std::string::npos) {
-                std::cerr << "Error: Invalid file format. Colon not found." << std::endl;
+            if (colonPos == string::npos) {
+                cerr << "Error: Invalid file format. Colon not found." << endl;
                 continue;
             }
             key = line.substr(0, colonPos);
 
             size_t openParenPos, commaPos, closeParenPos;
-            while ((openParenPos = line.find('(', colonPos)) != std::string::npos) {
+            while ((openParenPos = line.find('(', colonPos)) != string::npos) {
                 commaPos = line.find(',', openParenPos);
                 closeParenPos = line.find(')', commaPos);
-                if (commaPos == std::string::npos || closeParenPos == std::string::npos) {
-                    std::cerr << "Error: Invalid file format. Parentheses or comma not found." << std::endl;
+                if (commaPos == string::npos || closeParenPos == string::npos) {
+                    cerr << "Error: Invalid file format. Parentheses or comma not found." << endl;
                     break;
                 }
                 docID = line.substr(openParenPos + 1, commaPos - openParenPos - 1);
-                frequency = std::stoi(line.substr(commaPos + 1, closeParenPos - commaPos - 1));
+                frequency = stoi(line.substr(commaPos + 1, closeParenPos - commaPos - 1));
                 insert(key, docID, frequency);
                 colonPos = closeParenPos + 1;
             }
