@@ -7,31 +7,33 @@
 #include "AvlTree.h"
 #include "DocumentParser.h"
 
+using namespace std;
+
 // QueryProcessor handles search queries and outputs ranked documents based on frequency.
 class QueryProcessor {
    private:
     // Reference to AVL trees containing person, organization, and word data
-    AvlTree<std::string>& PersonTree;
-    AvlTree<std::string>& OrganizationTree;
-    AvlTree<std::string>& WordsTree;
+    AvlTree<string>& PersonTree;
+    AvlTree<string>& OrganizationTree;
+    AvlTree<string>& WordsTree;
 
     // Stores maps of query results and exclusion maps
-    std::vector<std::map<std::string, int>> vectorOfMaps;
-    std::vector<std::map<std::string, int>> vectorOfBadMaps;
+    vector<map<string, int>> vectorOfMaps;
+    vector<map<string, int>> vectorOfBadMaps;
 
     // Vector to hold document-frequency pairs for ranking
-    std::vector<std::pair<std::string, int>> documentFrequencyPairs;
+    vector<pair<string, int>> documentFrequencyPairs;
 
     // Index to track pagination during document output
     size_t searchIndex = 0;
 
    public:
     // Constructor initializes references to AVL trees
-    QueryProcessor(AvlTree<std::string>& person, AvlTree<std::string>& org, AvlTree<std::string>& word)
+    QueryProcessor(AvlTree<string>& person, AvlTree<string>& org, AvlTree<string>& word)
         : PersonTree(person), OrganizationTree(org), WordsTree(word) {}
 
     // Processes a search query and outputs the top results
-    void runQueryProcessor(const std::string& search) {
+    void runQueryProcessor(const string& search) {
         // Clear previous data
         documentFrequencyPairs.clear();
         vectorOfMaps.clear();
@@ -39,7 +41,7 @@ class QueryProcessor {
         searchIndex = 0;
 
         // Process the query
-        std::map<std::string, int> result = processQuery(search);
+        map<string, int> result = processQuery(search);
 
         // Sort results by frequency and output top documents
         sortDocumentsByFrequency(result);
@@ -47,7 +49,7 @@ class QueryProcessor {
     }
 
     // Processes a query string and returns the resulting map of document frequencies
-    std::map<std::string, int> processQuery(std::string search) {
+    map<string, int> processQuery(string search) {
         SeperateString(search); // Tokenize and classify search terms
 
         if (vectorOfMaps.empty()) {
@@ -55,7 +57,7 @@ class QueryProcessor {
         }
 
         // Start with the first map and find intersections with other maps
-        std::map<std::string, int> result = vectorOfMaps[0];
+        map<string, int> result = vectorOfMaps[0];
         for (size_t i = 1; i < vectorOfMaps.size(); ++i) {
             result = intersectMaps(result, vectorOfMaps[i]);
         }
@@ -68,13 +70,13 @@ class QueryProcessor {
     }
 
     // Sorts the document-frequency pairs in descending order by frequency
-    void sortDocumentsByFrequency(const std::map<std::string, int>& documentFrequencyMap) {
+    void sortDocumentsByFrequency(const map<string, int>& documentFrequencyMap) {
         documentFrequencyPairs.clear();
         for (const auto& pair : documentFrequencyMap) {
             documentFrequencyPairs.push_back(pair);
         }
-        std::sort(documentFrequencyPairs.begin(), documentFrequencyPairs.end(),
-                  [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
+        sort(documentFrequencyPairs.begin(), documentFrequencyPairs.end(),
+                  [](const pair<string, int>& a, const pair<string, int>& b) {
                       return a.second > b.second;
                   });
     }
@@ -85,16 +87,16 @@ class QueryProcessor {
         size_t startIndex = searchIndex;
 
         if (startIndex >= documentFrequencyPairs.size()) {
-            std::cout << "No documents match the search criteria." << std::endl;
+            cout << "No documents match the search criteria." << endl;
             return;
         }
 
         // Output documents starting from the current index
         while (startIndex < documentFrequencyPairs.size() && count < numDocuments) {
             const auto& pair = documentFrequencyPairs[startIndex];
-            std::cout << count + 1 << ". ";
+            cout << count + 1 << ". ";
             DocumentParser::printDocument(pair.first);
-            std::cout << std::endl;
+            cout << endl;
             ++count;
             ++startIndex;
         }
@@ -102,9 +104,9 @@ class QueryProcessor {
     }
 
     // Tokenizes and classifies search terms
-    void SeperateString(std::string search) {
-        std::string tempWord = "";
-        std::vector<std::string> wordsToSearch = DocumentParser::tokenizer(search);
+    void SeperateString(string search) {
+        string tempWord = "";
+        vector<string> wordsToSearch = DocumentParser::tokenizer(search);
 
         for (auto& word : wordsToSearch) {
             word = removePunctuationExcept(word);
@@ -125,8 +127,8 @@ class QueryProcessor {
     }
 
     // Finds the intersection of two maps
-    std::map<std::string, int> intersectMaps(std::map<std::string, int>& map1, std::map<std::string, int>& map2) {
-        std::map<std::string, int> intersectMap;
+    map<string, int> intersectMaps(map<string, int>& map1, map<string, int>& map2) {
+        map<string, int> intersectMap;
 
         for (auto it = map1.begin(); it != map1.end(); ++it) {
             auto findIter = map2.find(it->first);
@@ -139,8 +141,8 @@ class QueryProcessor {
     }
 
     // Excludes keys from the map that exist in badMap
-    std::map<std::string, int> excludeMaps(const std::map<std::string, int>& map, const std::map<std::string, int>& badMap) {
-        std::map<std::string, int> excludeMap;
+    map<string, int> excludeMaps(const map<string, int>& map, const map<string, int>& badMap) {
+        map<string, int> excludeMap;
         for (const auto& pair : map) {
             if (badMap.find(pair.first) == badMap.end()) {
                 excludeMap.insert(pair);
@@ -150,8 +152,8 @@ class QueryProcessor {
     }
 
     // Removes punctuation from a string except for colons and dashes
-    static std::string removePunctuationExcept(std::string word) {
-        for (std::string::size_type i = 0; i < word.length(); ++i) {
+    static string removePunctuationExcept(string word) {
+        for (string::size_type i = 0; i < word.length(); ++i) {
             if (ispunct(word.at(i)) && word.at(i) != ':' && word.at(i) != '-') {
                 word.erase(i, 1);
                 --i;
@@ -161,14 +163,14 @@ class QueryProcessor {
     }
 
     // Reads tree data from files
-    void getTreesfromFile(const std::string& personFile, const std::string& orgFile, const std::string& wordFile) {
+    void getTreesfromFile(const string& personFile, const string& orgFile, const string& wordFile) {
         PersonTree.readFromTextFile(personFile);
         OrganizationTree.readFromTextFile(orgFile);
         WordsTree.readFromTextFile(wordFile);
     }
 
     // Retrieves the document name at the specified index
-    std::string getDocumentName(std::vector<std::pair<std::string, int>>::size_type index) {
+    string getDocumentName(vector<pair<string, int>>::size_type index) {
         if (index >= documentFrequencyPairs.size()) {
             return "";
         }
